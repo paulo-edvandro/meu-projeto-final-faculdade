@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD Produtos</title>
+  <style>
+    body { font-family: Arial; max-width: 700px; margin: 20px auto; }
+    input, button { margin: 5px; padding: 5px; width: 95%; }
+    .box { border: 1px solid #aaa; padding: 15px; margin-top: 20px; border-radius: 6px; }
+    button { cursor: pointer; background: #0066ff; color: white; border: none; border-radius: 5px; }
+    button:hover { background: #0044aa; }
+  </style>
+</head>
+<body>
+
+<h2>CRUD Produtos (Front-End)</h2>
+
+<div class="box">
+  <h3>Criar Produto</h3>
+  <input id="nome" placeholder="Nome">
+  <input id="descricao" placeholder="Descrição">
+  <input id="preco" placeholder="Preço" type="number">
+  <button onclick="criar()">Criar</button>
+</div>
+
+<div class="box">
+  <h3>Atualizar Produto</h3>
+  <input id="idUpdate" placeholder="ID">
+  <input id="nomeUpdate" placeholder="Nome">
+  <input id="descricaoUpdate" placeholder="Descrição">
+  <input id="precoUpdate" placeholder="Preço" type="number">
+  <button onclick="atualizar()">Atualizar</button>
+</div>
+
+<div class="box">
+  <h3>Listar Todos</h3>
+  <button onclick="listar()">Listar</button>
+  <pre id="lista"></pre>
+</div>
+
+<div class="box">
+  <h3>Consultar por ID</h3>
+  <input id="idBusca" placeholder="ID">
+  <button onclick="buscarID()">Buscar</button>
+  <pre id="resultadoID"></pre>
+</div>
+
+<div class="box">
+  <h3>Deletar Produto</h3>
+  <input id="idDelete" placeholder="ID">
+  <button onclick="deletar()">Deletar</button>
+</div>
+
+<script>
+const API = "http://IP-DO-SEU-BACKEND:8080";  // <<< ALTERE ISSO
+
+async function criar() {
+  await fetch(API + "/produtos", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      nome: nome.value,
+      descricao: descricao.value,
+      preco: preco.value
+    })
+  });
+  alert("Produto criado!");
+}
+
+async function atualizar() {
+  await fetch(API + "/produtos/" + idUpdate.value, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      nome: nomeUpdate.value,
+      descricao: descricaoUpdate.value,
+      preco: precoUpdate.value
+    })
+  });
+  alert("Produto atualizado!");
+}
+
+async function listar() {
+  const dados = await fetch(API + "/produtos").then(r => r.json());
+  lista.innerText = JSON.stringify(dados, null, 2);
+}
+
+async function buscarID() {
+  const dado = await fetch(API + "/produtos/" + idBusca.value).then(r => r.json());
+  resultadoID.innerText = JSON.stringify(dado, null, 2);
+}
+
+async function deletar() {
+  await fetch(API + "/produtos/" + idDelete.value, { method: "DELETE" });
+  alert("Produto deletado!");
+}
+</script>
+
+</body>
+</html>
